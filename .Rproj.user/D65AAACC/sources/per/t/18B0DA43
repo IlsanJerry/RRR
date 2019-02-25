@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549604964061.000,
+    "dirty" : false,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "2014756616",
+    "id" : "18B0DA43",
+    "lastKnownWriteTime" : 1549638775,
+    "last_content_update" : 1549638775366,
+    "path" : "~/R/2019_02_02 [ bike ]/ggmapTest.R",
+    "project_path" : "ggmapTest.R",
+    "properties" : {
+        "cursorPosition" : "14,35",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

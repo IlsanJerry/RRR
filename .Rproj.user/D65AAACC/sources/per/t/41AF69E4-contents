@@ -1,0 +1,114 @@
+---
+title: "xlsx_test"
+author: "CW"
+date: "2019년 2월 6일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+Sys.setlocale('LC_ALL','C')
+Sys.setlocale("LC_ALL", "korean")
+```
+
+```{r}
+a<-read.csv("C:/Users/ChanWoo/Desktop/따릉이 분석/2018 공공 자전거/대여이력정보(이동경로에 대한 데이터 분석용)/서울특별시 공공자전거 대여이력 정보_2018년_1월~3월.csv")
+str(a)
+
+install.packages("xlsx")
+library(xlsx)
+
+install.packages("rJava")
+library(rJava)
+
+xlsx_test1=read.xlsx("C:/Users/ChanWoo/Desktop/따릉이 분석/2018 공공 자전거/대여이력정보(이동경로에 대한 데이터 분석용)/AAA.xlsx",sheetIndex=1,startRow=2, colNames = TRUE)
+
+data <- read.xlsx("C:/Users/ChanWoo/Desktop/따릉이 분석/2018 공공 자전거/대여이력정보(이동경로에 대한 데이터 분석용)/AAA.xlsx", sheetIndex=1)
+
+data <- read.xlsx("C:/Users/ChanWoo/Desktop/따릉이 분석/2018 공공 자전거/대여이력정보(이동경로에 대한 데이터 분석용)/AAA.xlsx", sheetName="Sheet1")
+
+ttt <-read.csv("C:/Users/ChanWoo/Desktop/AAA.csv")
+
+
+
+
+library(xlsx)
+
+library(gdata)
+
+fileXlsx<-read.xlsx2('2013_시도별_월별_교통사고.xlsx',sheetIndex=1,startRow=4,header=TRUE)
+
+fileXls<-read.xls('2013_시도별_월별_교통사고.xls',sheet=1,fileEncoding="utf-8")
+
+print(file)
+
+
+
+
+```
+
+```{r}
+library(dplyr)
+
+bbb <-read.csv("C:/Users/ChanWoo/Desktop/bb.csv")
+b1 <- bbb %>% filter(이용건수 == 1)
+
+b2 <-bbb %>% select(대여시간,이용건수)  # math 추출
+plot(b2)
+as.numeric(b2)
+
+fit <- lm(이용건수~., data = b2)
+library("car")
+
+library("psych")
+
+
+
+pairs.panels(b2[names(b2)])
+```
+
+```{r}
+#내 api key AIzaSyAbw8nfyYvBG5lHF3Isf5xMEivl6h9w0eU
+install.packages("ggmap")
+library(ggmap)
+
+install.packages('devtools') 
+library(devtools) 
+
+install_github("dkahle/ggmap")
+library(ggmap)
+
+register_google(key=" AIzaSyAbw8nfyYvBG5lHF3Isf5xMEivl6h9w0eU")
+seoul_map <-get_map("seoul",zoom = 13,maptype = "roadmap")
+plot(seoul_map)
+
+```
+```{r}
+geocode("Korea", source = "google")
+
+qmap("seoul", zoom = 11, maptype = "roadmap" )
+seoul <- get_map("seoul", zoom=13,maptype = "roadmap")
+seoul_map <-get_map("seoul",zoom = 20,maptype = "roadmap")
+ggmap(seoul)
+```
+
+
+```{r}
+
+
+
+library('rvest') 
+
+html.airports <- read_html('https://en.wikipedia.org/wiki/List_of_busiest_airports_by_passenger_traffic') 
+
+df <- html_table(html_nodes(html.airports, 'table')[[1]], fill = TRUE) colnames(df)[6] <- 'total' df$total <- gsub('\\[[0-9]+\\]', '', df$total) df$total <- gsub(',', '', df$total) df$total <- as.numeric(df$total) gc <- geocode(df$Airport) df <- cbind(df, gc) world <- map_data('world') ggplot(df, aes(x=lon, y=lat)) + geom_polygon(data=world, aes(x=long, y=lat, group=group), fill='grey75', color='grey70') + geom_point(color='dark red', alpha=.25, aes(size=total)) + geom_point(color='dark red', alpha=.75, shape=1, aes(size=total)) + theme(legend.position='none')
+
+```
+
+
+##대여소 위치정보 
+```{r}
+station <-read.csv("C:/Users/ChanWoo/Desktop/따릉이 분석/2018 공공 자전거/대여소 위치 정보/대여소정보.csv")
+
+```
+

@@ -1,0 +1,1498 @@
+
+###ggplot 테스트중
+
+##R을 활용한 시각화##
+# install.packages("ggcorrplot")
+library("ggplot2")
+library("plotly")
+library("ggcorrplot")
+
+#ggplot 
+#산점도 
+# 데이터 & 패키지 준비
+data_point = data.frame(xx = 1:10,
+                        yy = sample(1:10, 10))
+library("ggplot2")
+
+# 그래프
+ggplot(data = data_point, aes(x = xx, y = yy)) + geom_point()
+ggplot(data = data_point, aes(xx, yy)) + geom_point()
+ggplot() + geom_point(data = data_point, aes(x = xx, y = yy))
+ggplot() + geom_point(data = data_point, aes(xx, yy))
+ggplot() + geom_point(data_point, aes(xx, yy))
+ggplot() + geom_point(aes(xx, yy), data_point)
+
+
+##기본 그래프
+#선 그래프
+ggplot(data = data_point, aes(x = xx, y = yy)) + 
+  geom_line()
+
+#막대 그래프
+data_bar = data.frame(xx = 1:10,
+                      yy = sample(1:3, 10, replace = TRUE))
+data_bar
+
+ggplot(data = data_bar, aes(x = yy)) + geom_bar()
+
+table(data_bar$yy)
+
+ggplot(data = data_bar, aes(x = xx, y = yy)) + 
+  geom_bar(stat = "identity")
+
+ggplot(data = data_bar, aes(x = xx, y = yy)) + 
+  geom_col()
+
+#추가 기능
+ggplot(data = data_point, aes(x = xx, y = yy)) + 
+  geom_point(color = "#FFA500")
+
+ggplot(data = data_point, aes(x = xx, y = yy)) + 
+  geom_point(size = 5)
+
+ggplot(data = data_point, aes(x = xx, y = yy)) + 
+  geom_point(color = "#FFA500", size = 5)
+
+##다중 그래프 ####
+#그래프
+# 데이터 준비
+line_df = data.frame(obs = 1:30,
+                     var_1 = rep(c("A", "B", "C"), 10),
+                     value = sample(1:100, size = 10),
+                     stringsAsFactors = FALSE)
+head(line_df)
+
+library("ggplot2")
+
+# 그래프 1
+ggplot(data = line_df, aes(x = obs,
+                           y = value)) + 
+  geom_line()
+
+# 그래프 2
+ggplot(data = line_df, aes(x = obs,
+                           y = value,
+                           group = var_1)) + 
+  geom_line()
+
+# 그래프 3
+ggplot(data = line_df, aes(x = obs,
+                           y = value,
+                           group = var_1,
+                           color = var_1)) + 
+  geom_line()
+
+
+# 그래프 4
+ggplot(data = line_df, aes(x = obs,
+                           y = value,
+                           group = var_1,
+                           color = var_1)) + 
+  geom_line() + 
+  geom_point(data = line_df, aes(x = obs,
+                                 y = value,
+                                 group = var_1,
+                                 color = var_1))
+
+# 그래프 5
+ggplot(data = line_df, aes(x = obs,
+                           y = value,
+                           group = var_1,
+                           color = var_1)) + 
+  geom_line(size = 1.3) + 
+  geom_point(data = line_df, aes(x = obs,
+                                 y = value,
+                                 group = var_1,
+                                 color = var_1),
+             size = 4)
+
+
+# 코드를 조금 더 간결하게 어떻게 바꿨드라..?ㅠㅠ
+ggplot(data = line_df, aes(x = obs,
+                           y = value,
+                           group = var_1,
+                           color = var_1)) + 
+  geom_line(size = 1.3) + 
+  geom_point(size = 4)
+
+ggplot() + 
+  geom_line(data = line_df, aes(x = obs,
+                                y = value,
+                                group = var_1,
+                                color = var_1),
+            size = 1.3) + 
+  geom_point(data = line_df, aes(x = obs,
+                                 y = value,
+                                 group = var_1,
+                                 color = var_1),
+             size = 4)
+
+
+##색상 설정
+##막대 그래프
+# 데이터 준비
+bar_df = data.frame(obs = 1:10,
+                    var = rep(c("A", "B", "C"), length.out = 10),
+                    value = sample(1:100, size = 10),
+                    stringsAsFactors = FALSE)
+head(bar_df)
+
+# 그래프 1
+ggplot(data = bar_df, aes(x = obs,
+                          y = value)) + 
+  geom_bar(stat = "identity")
+
+ggplot(data = bar_df, aes(x = obs,
+                          y = value)) + 
+  geom_col()
+
+
+# 그래프 2
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_bar(stat = "identity")
+
+# 그래프 3
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          fill = value)) + 
+  geom_bar(stat = "identity")
+
+# 그래프 4
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          fill = as.factor(value))) + 
+  geom_bar(stat = "identity")
+
+# 그래프 5
+ggplot(data = bar_df, aes(x = as.factor(obs),
+                          y = value,
+                          fill = as.factor(value))) + 
+  geom_bar(stat = "identity")
+
+
+#그래프 4와 5의 차이점 ?? ....아래봐
+
+# 그래프 6
+ggplot(data = bar_df, aes(x = var,
+                          y = value,
+                          fill = as.factor(value))) + 
+  geom_bar(stat = "identity", position = "stack")
+
+# 그래프 7
+ggplot(data = bar_df, aes(x = var,
+                          y = value,
+                          fill = as.factor(value))) + 
+  geom_bar(stat = "identity", position = "dodge")
+
+
+##막대 그래프
+# 데이터 준비
+color_df = data.frame(obs = 1:10,
+                      var = rep(c("A", "B", "C"), length.out = 10),
+                      value = sample(1:100, size = 10),
+                      stringsAsFactors = FALSE)
+head(color_df)
+
+# 그래프 1
+ggplot(data = color_df, aes(x = var,
+                            y = value,
+                            fill = as.factor(value))) + 
+  geom_bar(stat = "identity", position = "stack")
+
+# 그래프 2
+ggplot(data = color_df, aes(x = var,
+                            y = value,
+                            fill = "blue")) + 
+  geom_bar(stat = "identity", position = "stack")
+
+# 그래프 3
+ggplot(data = color_df, aes(x = var,
+                            y = value),
+       fill = "blue") + 
+  geom_bar(stat = "identity", position = "stack")
+
+# 그래프 4
+ggplot(data = color_df, aes(x = var,
+                            y = value)) + 
+  geom_bar(stat = "identity", 
+           position = "stack",
+           fill = "blue")
+
+# 그래프 5
+ggplot(data = color_df, aes(x = var,
+                            y = value)) + 
+  geom_bar(stat = "identity", 
+           position = "stack",
+           fill = "blue",
+           alpha = 0.3)
+
+##선 그래프
+# 데이터 준비
+color_df = data.frame(obs = 1:10,
+                      var = rep(c("A", "B", "C"), length.out = 10),
+                      value = sample(1:100, size = 10),
+                      stringsAsFactors = FALSE)
+head(color_df)
+
+# 그래프 1
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value)) + 
+  geom_line(size = 2)
+
+# 그래프 2
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value,
+           color = value)) + 
+  geom_line(size = 2)
+
+
+# 그래프 3
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value,
+           color = "blue")) + 
+  geom_line(size = 2)
+
+
+# 그래프 4
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value),
+       color = "blue") + 
+  geom_line(size = 2)
+
+
+# 그래프 5
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value)) + 
+  geom_line(size = 2,
+            color = "blue")
+
+
+# 그래프 6
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value)) + 
+  geom_line(size = 2,
+            color = "blue",
+            alpha = 0.3)
+
+##선 그래프 - 색상함수 활용
+# 그래프 1
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value,
+           group = var,
+           color = var)) + 
+  geom_line(size = 2) + 
+  scale_color_grey(start = 0.2,
+                   end = 0.8)
+
+
+# 그래프 2
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value,
+           group = var,
+           color = var)) + 
+  geom_line(size = 2) + 
+  scale_color_brewer(palette = 1)
+
+# 그래프 3
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value,
+           group = var,
+           color = var)) + 
+  geom_line(size = 2) + 
+  scale_color_brewer(palette = 2)
+
+# 그래프 4
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value,
+           group = var,
+           color = var)) + 
+  geom_line(size = 2) + 
+  scale_color_brewer(palette = 3)
+
+# 그래프 5 - 중요!
+ggplot(data = color_df,
+       aes(x = obs,
+           y = value,
+           group = var,
+           color = var)) + 
+  geom_line(size = 2) + 
+  scale_color_manual(values = c("A" = "red",
+                                "B" = "blue",
+                                "C" = "green"))
+
+##축 설정
+##여백 조정
+# 데이터 준비
+bar_df = data.frame(obs = 1:10,
+                    var = rep(c("A", "B", "C"), length.out = 10),
+                    value = sample(1:100, size = 10),
+                    stringsAsFactors = FALSE)
+head(bar_df)
+
+# 기본 그래프
+ggplot(data = bar_df, aes(x = var,
+                          y = value,
+                          fill = value)) + 
+  # geom_col()
+  geom_bar(stat = "identity")
+
+# 그래프 1
+ggplot(data = bar_df, aes(x = var,
+                          y = value,
+                          fill = value)) + 
+  geom_bar(stat = "identity") + 
+  scale_x_discrete(expand = c(0.01, 0.01))
+
+# 그래프 2
+ggplot(data = bar_df, aes(x = var,
+                          y = value,
+                          fill = value)) + 
+  geom_bar(stat = "identity") + 
+  scale_x_discrete(expand = c(0.5, 0.5))
+
+# 그래프 3
+ggplot(data = bar_df, aes(x = var,
+                          y = value,
+                          fill = value)) + 
+  geom_bar(stat = "identity") + 
+  scale_y_discrete(expand = c(0.01, 0.01))
+
+# 그래프 4
+ggplot(data = bar_df, aes(x = var,
+                          y = value,
+                          fill = value)) + 
+  geom_bar(stat = "identity") + 
+  scale_y_discrete(expand = c(0.5, 0.5))
+
+##최대, 최소값 설정
+# 그래프 1
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value)) + 
+  geom_line(size = 2)
+
+# 그래프 2
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value)) + 
+  geom_line(size = 2) + 
+  scale_x_continuous(limits = c(5, 10))
+
+# 그래프 3
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value)) + 
+  geom_line(size = 2) + 
+  scale_y_continuous(limits = c(20, 80))
+
+
+# 그래프 4
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value)) + 
+  geom_line(size = 2) + 
+  scale_y_continuous(limits = c(0, 200))
+
+
+##구간 설정
+# 그래프 1
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value)) + 
+  geom_line(size = 2) + 
+  scale_x_continuous(breaks = c(5, 10),
+                     labels = c(5, 10))
+
+
+# 그래프 2
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value)) + 
+  geom_line(size = 2) + 
+  scale_y_continuous(breaks = seq(0, 100, 10),
+                     labels = seq(0, 100, 10))
+
+
+##요소(element) 설정..흐음.........
+##기호 변경
+# 데이터 준비
+bar_df = data.frame(obs = 1:10,
+                    var = rep(c("A", "B", "C"), length.out = 10),
+                    value = sample(1:100, size = 10),
+                    stringsAsFactors = FALSE)
+head(bar_df)
+
+# 그래프 1
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10)
+
+# 그래프 2
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10,
+             shape = 1)
+
+
+# 그래프 3
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10,
+             shape = 2)
+
+
+# 그래프 4
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value,
+                          shape = var)) + 
+  geom_point(size = 10) + 
+  scale_shape_manual(values = c("A" = 7,
+                                "B" = 8,
+                                "C" = 9))
+
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value,
+                          shape = var)) + 
+  geom_point(size = 10) + 
+  scale_shape_manual(values = c("A" = "@",
+                                "B" = 8,
+                                "C" = 9))
+
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value,
+                          shape = var)) + 
+  geom_point(size = 10) + 
+  scale_shape_manual(values = c("A" = 7,
+                                "B" = 8,
+                                "C" = 9)) + 
+  labs(color = "lg_color",
+       shape = "lg_shape")
+
+##텍스트 설정
+##글자 모양 설정
+# 기본 그래프
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10)
+
+# 그래프 1
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  theme(axis.title = element_text(size = 10))
+
+# 그래프 2
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  theme(axis.title = element_text(size = 10,
+                                  face = "bold"))
+
+# 그래프 3
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  theme(axis.title = element_text(size = 10,
+                                  face = "bold",
+                                  angle = 45))
+
+# 그래프 4
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  theme(axis.title.x = element_text(size = 30,
+                                    face = "italic",
+                                    angle = 30),
+        axis.title.y = element_text(size = 30,
+                                    face = "bold",
+                                    angle = 180))
+
+
+##제목 변경
+# 그래프 1
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  labs(x = "title_x_axis",
+       y = "title_y_axis",
+       title = "This_is_title") + 
+  theme(axis.title = element_text(size = 30),
+        title = element_text(size = 40))
+
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  labs(x = "title_x_axis",
+       y = "title_y_axis",
+       title = "This_is_title",
+       subtitle = "dd",
+       color = "color!!") + 
+  theme(axis.title = element_text(size = 20),
+        title = element_text(size = 30))
+
+
+# 그래프 2
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  scale_x_continuous(name = "title_x_axis") +
+  scale_y_continuous(name = "title_y_axis") +
+  ggtitle("Your_title") +
+  theme(axis.title = element_text(size = 30),
+        title = element_text(size = 40))
+
+# 그래프 3
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  theme(axis.title.x = element_text(size = 30,
+                                    face = "bold",
+                                    angle = 45))
+
+
+# 그래프 4
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  theme(axis.title.y = element_text(size = 30,
+                                    face = "bold",
+                                    angle = 45))
+
+
+##덧그리기
+##가로/세로선 추가
+# 데이터 준비
+bar_df = data.frame(obs = 1:10,
+                    var = rep(c("A", "B", "C"), length.out = 10),
+                    value = sample(1:100, size = 10),
+                    stringsAsFactors = FALSE)
+head(bar_df)
+
+# 기본 그래프
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) 
+
+# 그래프(가로선 추가)
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  geom_hline(yintercept = (1:10) * 10,
+             color = "#FFAACC",
+             alpha = 0.7,
+             linetype = 1:10)
+
+# 그래프(세로선 추가)
+ggplot(data = bar_df, aes(x = obs,
+                          y = value,
+                          color = value)) + 
+  geom_point(size = 10) + 
+  geom_vline(xintercept = 1:10,
+             color = rep(c("#FFAACC", "#44FF44"), each = 5),
+             alpha = 0.7,
+             linetype = 1:10)
+
+
+##annotate() 함수 
+# 텍스트
+ggplot() + 
+  geom_point(aes(x = 1:10,
+                 y = 1:10),
+             size = 3) + 
+  annotate(geom = "text",
+           label = "Adf",
+           size = 10,
+           x = 7,
+           y = 3)
+
+# 사각형
+ggplot() + 
+  geom_point(aes(x = 1:10,
+                 y = 1:10),
+             size = 3) + 
+  annotate(geom = "rect",
+           fill = "#FFA500",
+           xmin = 5, xmax = 7,
+           ymin = 2, ymax = 3)
+
+# 선분
+ggplot() + 
+  geom_point(aes(x = 1:10,
+                 y = 1:10),
+             size = 3) + 
+  annotate(geom = "segment",
+           color = "#FF0000",
+           size = 2,
+           x = 5, xend = 7,
+           y = 2, yend = 3)
+
+# 값 범위
+ggplot() + 
+  geom_point(aes(x = 1:10,
+                 y = 1:10),
+             size = 3) + 
+  annotate(geom = "pointrange",
+           color = "#FF0000",
+           size = 2,
+           x = 7, y = 3,
+           ymin = 2, ymax = 5)
+
+
+##범례
+##사전 준비
+# 데이터 준비
+bar_df = data.frame(obs = 1:10,
+                    var = rep(c("A", "B", "C"), length.out = 10),
+                    value = sample(1:100, size = 10),
+                    stringsAsFactors = FALSE)
+head(bar_df)
+
+# 기본 그래프
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value,
+           shape = var)) + 
+  geom_point(size = 10)
+
+##위치 조정
+# top, bottom, left, right
+
+# 그래프 1
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value,
+           shape = var)) + 
+  geom_point(size = 10) + 
+  theme(legend.position = "top")
+
+# 그래프 2
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value,
+           shape = var)) + 
+  geom_point(size = 10) + 
+  theme(legend.position = "bottom")
+
+##텍스트
+# 그래프 3
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value,
+           shape = var)) + 
+  geom_point(size = 10) + 
+  theme(legend.text = element_text(size = 15))
+
+# 그래프 4
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value,
+           shape = var)) + 
+  geom_point(size = 10) + 
+  theme(legend.title = element_text(size = 20))
+
+##기타
+# 그래프 5
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value,
+           shape = var)) + 
+  geom_point(size = 10) + 
+  theme(legend.key.size = unit(x = 0.5, units = "cm"))
+
+# 그래프 6
+ggplot(data = bar_df,
+       aes(x = obs,
+           y = value,
+           color = value,
+           shape = var)) + 
+  geom_point(size = 10) + 
+  theme(legend.key.width = unit(x = 2, units = "cm"))
+
+
+##다양한 그래프
+##히스토그램
+# 데이터 준비
+data("diamonds")
+str(diamonds)
+# 그래프
+ggplot(diamonds, aes(x = price,
+                     fill = cut)) + 
+  geom_histogram(binwidth = 500)
+
+# Very Good 이상 등급만 사용
+sapply(diamonds, "class")
+
+ggplot(diamonds[diamonds$cut >= "Very Good", ], 
+       aes(x = price,
+           fill = cut)) + 
+  geom_histogram(binwidth = 500)
+
+ggplot(diamonds[diamonds$cut %in% c("Very Good",
+                                    "Premium",
+                                    "Ideal"), ], 
+       aes(x = price,
+           fill = cut)) + 
+  geom_histogram(binwidth = 500)
+
+ggplot(diamonds[diamonds$cut %in% unique(diamonds$cut)[c(1, 2, 4)], ], 
+       aes(x = price,
+           fill = cut)) + 
+  geom_histogram(binwidth = 500)
+
+
+
+##dot plot
+# 데이터 준비
+data("mtcars")
+
+##ribbon graph 
+# 데이터 준비
+data("LakeHuron")
+huron = data.frame(year  = 1875:1972,
+                   level = as.vector(LakeHuron))
+# ribbon graph
+ggplot(data = huron,
+       aes(x = year)) + 
+  geom_ribbon(aes(ymin = level - 1,
+                  ymax = level + 1),
+              fill = "grey70") + 
+  geom_line(aes(y = level))
+
+ggplot(data = huron,
+       aes(x = year)) + 
+  geom_ribbon(aes(ymin = level - 1,
+                  ymax = level + 1),
+              fill = "grey70",
+              alpha = 0.4) + 
+  geom_line(aes(y = level)) + 
+  theme_bw()
+
+
+##다차원 시각화
+#분할 
+str(diamonds)
+ggplot(diamonds,
+       aes(x = carat,
+           y = price,
+           color = cut)) + 
+  geom_point() + 
+  facet_wrap( ~ cut, ncol = 3)
+
+ggplot(diamonds,
+       aes(x = carat,
+           y = price,
+           color = cut)) + 
+  geom_point() + 
+  facet_wrap( ~ cut, ncol = 5)          
+
+ggplot(diamonds,
+       aes(x = carat,
+           y = price,
+           color = price)) + 
+  geom_point(alpha = 0.25) + 
+  facet_wrap( ~ cut, ncol = 5)          
+
+ggplot(diamonds,
+       aes(x = carat,
+           y = price,
+           color = price)) + 
+  geom_point(alpha = 0.25) + 
+  facet_wrap( ~ cut, ncol = 5) + 
+  scale_y_continuous(breaks = (0:3) * 5000,
+                     labels = paste0(c((0:3) * 5), "k"))
+
+
+#병합
+#install.packages("ggExtra")
+#library("ggExtra")
+
+set.seed(1234)
+df = data.frame(x = c(rnorm(500, mean = -1), rnorm(500, mean = 1.5)),
+                y = c(rnorm(500, mean =  1), rnorm(500, mean = 1.7)))
+p = ggplot(df, aes(x, y)) + 
+  geom_point() 
+
+ggMarginal(p,
+           type = "histogram",
+           fill = "steelblue",
+           color = "darkblue",
+           bins = 30)
+
+ggMarginal(p,
+           type = "density",
+           fill = "steelblue",
+           color = "darkblue")
+
+ggMarginal(p,
+           type = "boxplot",
+           fill = "steelblue",
+           color = "darkblue")
+
+ggMarginal(p,
+           type = "violin",
+           fill = "steelblue",
+           color = "darkblue")
+
+
+##막대그래프 중첩 
+##그래프 6개 중첩 
+df = data.frame(xx = 1:10,
+                yy = 1:10)
+
+ggplot(data = df, aes(x = xx,
+                      y = yy)) +
+  geom_line(size = 2) + 
+  geom_point(size = 9) + 
+  geom_point(size = 7,
+             color = "#FFFFFF") +
+  geom_point(data = data.frame(a = c(2, 8),
+                               b = c(2, 8)),
+             aes(x = a, y = b),
+             size = 7,
+             color = "#FFAACC")
+
+##고급 시각화
+#반응형 그래프
+library("ggplot2")
+library("plotly")
+
+gg = ggplot() + 
+  geom_point(aes(x = 1:10,
+                 y = 1:10),
+             size = 10)
+ggplotly(gg)
+
+#반응형 3D 그래프
+library("reshape2")
+library("plotly")
+
+pp = function(n, r = 4){
+  x = seq(from = -r * pi, to = r * pi, length.out = n)
+  df = expand.grid(x = x, y = x)
+  df$r = sqrt(df$x^2 + df$y^2)
+  df$z = cos(df$r^2) * exp(-df$r/6)
+  return(df)
+}
+data_xyz = pp(100)
+data_z = acast(data_xyz, x ~ y, value.var = "z")
+plot_ly(z = data_z, type = "surface")
+
+
+##여긴 전역하니깐, 안됨 수정 필수.
+########################################################################
+##Google Map
+library("ggplot2")
+# install.packages("ggmap")
+library("ggmap")
+
+kor = get_map("seoul", zoom = 11, maptype = "hybrid")
+# saveRDS(kor, "map_kor.rds")
+# kor = readRDS("map_kor.rds")
+df = data.frame(lon = 0, lat = 0,
+                location = c("신림역", "서울역"), 
+                stringsAsFactors = FALSE)
+for(n in 1:nrow(df)){
+  location_sub = geocode(enc2utf8(df[n, "location"]), source = "google", force = TRUE)
+  df[n, 1:2] = location_sub
+  Sys.sleep(1)
+}
+# write.csv(df, "map_location.csv", row.names = FALSE)
+# df = read.csv("map_location.csv", stringsAsFactors = FALSE)
+
+ggmap(kor) + 
+  geom_point(data = df, 
+             aes(x = lon, y = lat),
+             size = 5, alpha = 0.7,
+             color = "#FF0000") + 
+  geom_text(data = df, 
+            aes(x = lon, y = lat + 0.01, 
+                label = location), 
+            size = 3) + 
+  labs(x = NULL, y = NULL)
+
+##########################################################################################
+
+##시계열 데이터
+##시간 데이터 생성
+# as.POSIXct() 함수 사용
+as.POSIXct("2016-03-10")
+as.POSIXct("2016-03-10 13:12")
+as.POSIXct("2016-03-10 13:12:45")
+as.POSIXct("2016-03-10", tz="UTC")
+as.POSIXct("2016-03-10") + 1
+as.POSIXct("2016-03-10") + 100
+
+# 시스템 시간 호출
+Sys.Date()
+Sys.time()
+
+# seq() 함수 활용
+seq(from = as.POSIXct("2016-03-10"), 
+    to   = as.POSIXct("2018-05-12"),
+    by   = "year")
+
+seq(from = as.POSIXct("2016-03-10"), 
+    to   = as.POSIXct("2018-05-12"),
+    by   = "month")
+
+seq(from = as.POSIXct("2016-03-10"), 
+    to   = as.POSIXct("2018-05-12"),
+    by   = "day")
+
+seq(from = as.POSIXct("2016-03-10"), 
+    to   = as.POSIXct("2018-05-12"),
+    by   = "hour")
+
+seq(from = as.POSIXct("2016-03-10"), 
+    to   = as.POSIXct("2018-05-12"),
+    by   = "min")
+
+seq(from = as.POSIXct("2016-03-10"), 
+    to   = as.POSIXct("2018-05-12"),
+    by   = "sec")
+
+
+#격일로 출력
+seq(from = as.POSIXct("2018-03-10"), 
+    to   = as.POSIXct("2018-03-20"),
+    by   = "2 day")
+
+seq(from = as.POSIXct("2018-03-10"), 
+    to   = as.POSIXct("2018-03-20"),
+    by   = 60 * 60 * 24 * 2)
+
+
+#시간 데이터 추출
+time_1 = as.POSIXct("2016-03-10 13:12:45")
+
+# 내장함수 활용
+months(time_1, abbreviate = TRUE) 
+weekdays(time_1, abbreviate = TRUE)
+quarters(time_1, abbreviate = TRUE)
+as.Date(time_1)
+
+# 패키지(lubridate) 활용
+library("lubridate")
+
+year(time_1)
+month(time_1)
+day(time_1)
+hour(time_1)
+second(time_1)
+
+year(time_1) = 2015
+time_1
+
+
+
+
+
+#### __ [04] 달력 만들기 ####
+library("lubridate")
+timeline = seq(as.POSIXct("2018-01-01"), 
+               as.POSIXct("2018-12-31"), by = "30 sec")
+
+df = data.frame(obs   = 1:length(timeline),
+                time  = timeline,
+                year  = year(timeline),
+                month = month(timeline),
+                day   = day(timeline),
+                hour  = hour(timeline),
+                minute  = minute(timeline),
+                second  = second(timeline),
+                quarter = quarter(timeline),
+                week    = week(timeline),
+                weekday = weekdays(timeline))
+head(df)
+tail(df)
+
+# quiz
+# 방법 1
+df[, "value"] = rnorm(n = nrow(df), mean = 3)
+head(df)
+
+df_agg = aggregate(data = df, 
+                   value ~ year + month + day, 
+                   FUN = "mean")
+head(df_agg)
+
+# 방법 2
+df[, "date"] = date(df$time)
+head(df)
+
+df_agg = aggregate(data = df, value ~ date, FUN = "mean")
+head(df_agg)
+
+df_agg[, "weekday"] = weekdays(df_agg$date, abbreviate = TRUE)
+head(df_agg)
+
+df_agg[, "weight"] = ifelse(df_agg$weekday == "월", 1, 0)
+head(df_agg)
+
+as.Date(12345, origin = "1970-01-01")
+
+strptime("!@2018--2&&03", 
+         format = "!@%Y--%m&&%d")
+?strptime
+
+### .-============================-. ####
+
+#### .###################. ####
+#### | 2. R과 금융 데이터 | ####
+#### .###################. ####
+
+## 패키지: 관련 데이터 주소
+# Quantmod:	http://www.quantmod.com/
+# Quandl:	http://www.quandl.com/help/packages/r
+# TFX: http://rpubs.com/gsee/TFX
+# Rbbg: http://findata.org/rbloomberg/
+# IBrokers:	https://www.interactivebrokers.com/en/main.php
+# rdatastream: https://github.com/fcocquemas/rdatastream
+# pwt: https://pwt.sas.upenn.edu/
+# fImport: http://www.rmetrics.org/
+# Thinknum: http://thinknum.com/
+
+### .-============================-. ####
+
+#### .###################. ####
+#### | 3. 금융 데이터 시각화 | ####
+#### .###################. ####
+library("ggplot2")
+
+#### __ [01] 목표치 설정 ####
+#### ____ ● 막대 그래프 ####
+# 데이터 준비
+set.seed(1228)
+df = data.frame(Company = LETTERS[1:5],
+                Performance = sample(30:120, 5),
+                Predict = sample(130:160, 5))
+
+# 기본 그래프
+gg_bar = ggplot(data = df,
+                aes(x = Company)) + 
+  geom_col(aes(y = Predict,
+               fill  = Company,
+               color = Company),
+           size = 1,
+           alpha = 0.1,
+           width = 0.7) +
+  geom_col(aes(y = Performance,
+               fill = Company),
+           width = 0.7) 
+gg_bar 
+
+class(gg_bar)
+str(gg_bar)
+
+# 01
+gg_bar +
+  geom_hline(yintercept = 0, color = "#666666", size = 1.2) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, 160)) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 12),
+        axis.ticks = element_line(size = 1),
+        panel.border = element_blank(),
+        legend.position = "none")
+
+# 02 - 올바른 y축 기준
+gg_bar +
+  geom_hline(yintercept = 0, color = "#666666", size = 1.2) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, 160),
+                     breaks = (0:6) * 25,
+                     labels = (0:6) * 25) + 
+  theme_bw() +
+  theme(axis.text = element_text(size = 12),
+        axis.ticks = element_line(size = 1),
+        panel.border = element_blank(),
+        legend.position = "none")
+
+# 03
+gg_bar +
+  geom_hline(yintercept = 0, color = "#666666", size = 1.2) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, 160),
+                     breaks = (0:6) * 25,
+                     labels = (0:6) * 25) + 
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size = 1, color = "#000000"),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 12),
+        axis.ticks = element_line(size = 1),
+        panel.border = element_blank(),
+        legend.position = "none")
+
+# 04
+gg_bar +
+  geom_hline(yintercept = 0, color = "#666666", size = 1.2) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, 160),
+                     breaks = (0:6) * 25,
+                     labels = (0:6) * 25) + 
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size = 1.5),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 12),
+        axis.ticks = element_line(size = 1),
+        panel.border = element_blank(),
+        legend.position = "none")
+
+# 05
+ggplot(data = df,
+       aes(x = Company)) + 
+  geom_col(aes(y = Predict),
+           fill = "#EEEEEE",
+           width = 0.7) +
+  geom_col(aes(y = Predict,
+               fill  = Company,
+               color = Company),
+           size = 1,
+           alpha = 0.1,
+           width = 0.7) +
+  geom_col(aes(y = Performance,
+               fill = Company),
+           width = 0.7) +
+  geom_hline(yintercept = 0, color = "#666666", size = 1.2) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, 160),
+                     breaks = (0:6) * 25,
+                     labels = (0:6) * 25) + 
+  theme(axis.text = element_text(size = 12),
+        axis.ticks = element_line(size = 1),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_line(size = 1.5),
+        panel.border = element_blank(),
+        legend.position = "none")
+
+#### ____ ● 선 그래프 ####
+# 데이터 준비
+set.seed(1228)
+df = data.frame(date = seq(as.POSIXct("2018-01-01"), as.POSIXct("2018-07-01"), by = "month"),
+                value = cumsum(sample(1:4, 7, replace = TRUE)))
+df
+
+# 01
+ggplot(data = df,
+       aes(x = date,
+           y = value)) + 
+  geom_line()
+
+# 02
+ggplot(data = df,
+       aes(x = date,
+           y = value)) + 
+  geom_line(size = 2) + 
+  scale_x_datetime(breaks = df$date,
+                   labels = paste0(lubridate::month(df$date), "M"))
+
+
+# 03
+ggplot(data = df,
+       aes(x = date,
+           y = value)) + 
+  geom_line(size = 2) + 
+  geom_point(size = 5) + 
+  geom_point(size = 3, color = "#FFFFFF") + 
+  scale_x_datetime(breaks = df$date,
+                   labels = paste0(lubridate::month(df$date), "M"))
+
+# 04
+ggplot(data = df,
+       aes(x = date,
+           y = value)) + 
+  geom_line(data = df[-nrow(df), ],
+            size = 2) + 
+  geom_line(data = df[(nrow(df) - 1):nrow(df), ],
+            size = 2,
+            color = "#888888") + 
+  geom_point(size = 5) + 
+  geom_point(size = 3, color = "#FFFFFF") + 
+  scale_x_datetime(breaks = df$date,
+                   labels = paste0(lubridate::month(df$date), "M"))
+
+# 05
+ggplot(data = df,
+       aes(x = date,
+           y = value)) + 
+  geom_line(data = df[-nrow(df), ],
+            size = 2) + 
+  geom_line(data = df[(nrow(df) - 1):nrow(df), ],
+            size = 1.2,
+            color = "#888888",
+            linetype = 3) + 
+  geom_point(size = 5) + 
+  geom_point(size = 3, color = "#FFFFFF") + 
+  scale_x_datetime(breaks = df$date,
+                   labels = paste0(lubridate::month(df$date), "M"))
+
+#### __ [02] 지역 비교 ####
+# 데이터 준비
+library("maptools")
+library("maps")
+library("ggsn")
+library("scatterpie")
+map = readShapePoly("2013_si_do.shp", verbose = FALSE)
+map_for = fortify(map)
+head(map_for)
+
+# map_for = map_for[(map_for$long >= 125.6) & (map_for$long <= 130), ]
+df_cl = read.csv("C:/Users/ChanWoo/Documents/R/10_19/clusters.csv")
+head(df_cl)
+
+#### ____ ● geom_polygon 활용 ####
+# 01
+ggplot(data = df_cl) + 
+  geom_polygon(data = map_for, 
+               aes(x = long, 
+                   y = lat,
+                   group = obs),
+               color = "#000000")
+
+# 02
+library("dplyr")
+df_index = data.frame(id = as.character(0:16),
+                      index = 0:16,
+                      stringsAsFactors = FALSE)
+map_join = left_join(map_for, df_index)
+head(map_join)
+
+ggplot(data = df_cl) + 
+  geom_polygon(data = map_join, 
+               aes(x = long, 
+                   y = lat, 
+                   fill = index,
+                   group = group),
+               color = "#000000")
+
+#### ____ ● 파이차트 활용 ####
+# 데이터 준비
+df_cl = read.csv("clusters.csv")
+head(df_cl)
+
+# 그래프
+ggplot(data = df_cl) + 
+  geom_polygon(data = map_for, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group),
+               fill = "#FFFFFF", 
+               color = "#000000") + 
+  geom_scatterpie(data = df_cl,
+                  aes(x = long, 
+                      y = lat,
+                      group = obs, 
+                      r = 0.13),
+                  cols = c("cl_1", "cl_2"), 
+                  color = NA,
+                  alpha = 1) +
+  scale_fill_manual(values = c("cl_1" = "#3171FF", "cl_2" = "#E86815")) + 
+  facet_wrap(~ year, ncol = 2) +
+  scalebar(data = df_cl,
+           dist = 100, dd2km = TRUE, model = "WGS84", location = "bottomright",
+           st.size = 3.6,
+           anchor = c(x = 131.5,
+                      y = 33.25),
+           facet.var = "df_cl$year",
+           facet.lev = "year") +
+  labs(x = "Longitude", y = "Latitude") + 
+  theme_bw() + 
+  theme(legend.position = "none",
+        strip.text = element_text(size = 20)) 
+
+
+#### __ [03] 금융거래 ####
+#### ____ ● Heatmap ####
+df = read.csv("C:/Users/ChanWoo/Documents/R/10_19/calendar_heatmap.csv", stringsAsFactors = FALSE)
+head(df)
+
+gg_heat = ggplot(data = df, 
+                 aes(x = monthweek, 
+                     y = weekdayf, 
+                     fill = VIX.Close)) + 
+  geom_tile(color = "white") + 
+  facet_grid(year ~ monthf) + 
+  scale_fill_gradient(low = "#FF0000", high = "#00FF00") +
+  labs(x = "Week of Month", y = NULL,
+       title = "Time-Series Calendar Heatmap", 
+       subtitle = "Yahoo Closing Price", 
+       fill = "Close")
+gg_heat
+
+library("plotly")
+ggplotly(gg_heat)
+
+#### ____ ● Bar-plot ####
+install.packages("ggpubr")
+library("ggpubr")
+df = read.csv("C:/Users/ChanWoo/Documents/R/10_19/fund_bar_lolipop.csv", stringsAsFactors = FALSE)
+head(df)
+
+# 01
+ggbarplot(df, 
+          x = "Fund",
+          y = "Interest",
+          fill = "group",         
+          color = "#FFFFFF",
+          palette = "jco",          
+          sort.val = "asc",         
+          sort.by.groups = FALSE,   
+          x.text.angle = 90) + 
+  geom_hline(yintercept = 0)
+
+# 02
+ggbarplot(df, 
+          x = "Fund",
+          y = "Interest",
+          fill = "group",         
+          color = "#FFFFFF",
+          palette = "jco",
+          rotate = TRUE,
+          sort.val = "asc",         
+          sort.by.groups = FALSE) + 
+  geom_hline(yintercept = 0)
+
+
+#### ____ ● Bubble chart ####
+library("ggpubr")
+df = read.csv("fund_bar_lolipop.csv", stringsAsFactors = FALSE)
+head(df)
+
+ggdotchart(df, 
+           x = "Fund", 
+           y = "Invest",
+           color = "Type",  
+           sorting = "asc", 
+           add = "segments")
+
+ggdotchart(df, 
+           x = "Fund", 
+           y = "Invest",
+           color = "Type",
+           rotate = TRUE,
+           dot.size = 7,
+           label = round(df$Invest),
+           font.label = list(size = 10, 
+                             vjust = 0.5), 
+           sorting = "asc", 
+           add = "segments")
+
+
+### .-============================-. ####
+
+#### .###################. ####
+#### | 4. R과 JS의 결합 | ####
+#### .###################. ####
+
+# https://www.highcharts.com/
+# d3js.org
+
+#### __ [01] highchart #####
+# install.packages("highcharter")
+library("highcharter")
+
+# 데이터 준비
+data(diamonds, mpg, package = "ggplot2")
+head(mpg)
+# 산점도
+hchart(object  = mpg, 
+       type    = "scatter", 
+       mapping = hcaes(x = displ, 
+                       y = hwy, 
+                       group = class))
+
+
+# 막대 그래프
+hchart(object = diamonds$cut, 
+       colorByPoint = TRUE)
+
+table(diamonds$cut)
+
+# 선 그래프 + 시계열
+# install.packages("forecast")
+library("forecast")
+airforecast = forecast(auto.arima(AirPassengers), level = 95)
+hchart(airforecast)
+
+airforecast
+head(airforecast)
+str(airforecast)
+
+# 봉차트
+# install.packages("quantmod")
+library("quantmod")
+highchart(type = "stock") %>% 
+  hc_add_series(getSymbols("GOOG", auto.assign = FALSE)) %>% 
+  hc_add_series(getSymbols("AMZN", auto.assign = FALSE),
+                type = "ohlc")
+
+#### __ [02] D3.js ####
+library("networkD3")
+# library("d3Network")
+
+src = c(rep("A",4), rep("B", 2), rep("C", 2), "D")
+target = c("B", "C", "D", "J", "E", "F", "G", "H", "I")
+networkData = data.frame(src, target)
+
+simpleNetwork(networkData)
+
+#### __ [03] radarchart ####
+# install.packages("radarchart")
+library("radarchart")
+
+labs = c("리스크", "매출", "자본", "규모", "시장", "부채")
+scores = list("values" = c(6, 3, 8, 6, 9, 1))
+
+chartJSRadar(scores = scores,
+             labs = labs,
+             width  = 20, 
+             height = 20,
+             addDots = FALSE, 
+             maxScale = 10,
+             lineAlpha = 0,
+             showLegend = FALSE)
+
+

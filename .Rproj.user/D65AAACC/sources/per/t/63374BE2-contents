@@ -1,0 +1,88 @@
+---
+title: "bike"
+author: "CW"
+date: "2019년 2월 6일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+Sys.setlocale('LC_ALL','C')
+Sys.setlocale("LC_ALL", "korean")
+```
+
+#OpenAPI주소 및 입력방ㅂ
+```{r}
+#http://요청주소/인증키/요청파일타입/OpenAPI호출서비스명/요청시작위치/요청종료위치/{검색어}법
+
+#http://openapi.seoul.go.kr:8088/65454877797375703934744e444163/xml/cycleRentUseTimeInfo/1/5/
+```
+
+##데이터 1~1000개 불러오 (EXCEL:365717)
+```{r}
+rm(list = ls())
+install.packages("XML")
+library(XML)
+
+url1<-"http://openapi.seoul.go.kr:8088/"
+url2<-"/xml/"
+url3<-"/100000/"
+url4<-"100999/"
+
+KEY="65454877797375703934744e444163"
+SERVICE="cycleRentUseTimeInfo"
+
+table <-data.frame()
+
+requestUrl<-paste(url1,KEY,url2,SERVICE,url3,url4,sep = "")
+doc <-xmlToDataFrame(requestUrl)
+
+##데이터 전체 갯수...?
+totaldatanumber = as.numeric(doc[1,1])
+datanumber <- totaldatanumber
+
+requestUrl<-paste(url1,KEY,url2,SERVICE,url3,url4,sep = "")
+doc <-xmlToDataFrame(requestUrl)
+table<-doc[3:nrow(doc),4:ncol(doc)]
+
+```
+
+```{r}
+total<-list()
+
+for(i in 1:length(urllist)){
+    
+    item <- list()
+    item_temp_dt<-data.table()
+    
+    raw.data <- xmlTreeParse(urllist[i], useInternalNodes = TRUE,encoding = "utf-8")
+    rootNode <- xmlRoot(raw.data)
+    items <- rootNode[[2]][['items']]
+
+    size <- xmlSize(items)
+    
+    for(j in 1:size){
+        item_temp <- xmlSApply(items[[j]],xmlValue)
+        item_temp_dt <- data.table( price = item_temp[1],
+                                    con_year = item_temp[2],
+                                    year = item_temp[3],
+                                    street = item_temp[4],
+                                    dong = item_temp[11],
+                                    aptnm = item_temp[17],
+                                    month = item_temp[18],
+                                    dat = item_temp[19],
+                                    area = item_temp[21],
+                                    bungi = item_temp[22],
+                                    floor = item_temp[24],
+                                    gu_code = locCode[((j-1)%/%12)+1],
+                                    gu = locCode_nm[((j-1)%/%12)+1]
+                                    )
+        item[[j]]<-item_temp_dt
+    }
+    total[[i]] <- rbindlist(item)
+}
+
+seoul_apt_2017 <- rbindlist(total)
+
+```
+

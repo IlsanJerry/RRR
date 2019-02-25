@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549701162288.000,
+    "dirty" : false,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "2687519927",
+    "id" : "5AA451D9",
+    "lastKnownWriteTime" : 1549780867,
+    "last_content_update" : 1549780867626,
+    "path" : "~/R/2019_02_02 [ bike ]/R_map_leaflet.R",
+    "project_path" : "R_map_leaflet.R",
+    "properties" : {
+        "cursorPosition" : "3,17",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

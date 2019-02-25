@@ -1,0 +1,373 @@
+---
+title: "Untitled"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, message=FALSE, warning=FALSE}
+# data handling
+library(dplyr)
+library(lazyeval)
+library(tidyr)
+library(data.table)
+library(lubridate)
+# chapter 1
+# library(budongsan) # devtools::install_github("keepcosmos/budongsan")
+library(highcharter)
+library(purrr)
+library(viridis)
+# chapter 2
+library(XML)
+library(stringr)
+library(ggplot2)
+library(leaflet)
+library(jsonlite)
+```
+
+
+```{r}
+load("~/HDD/Dropbox/17-1class/Data visualization with R/KATAVis/ko_apt.RData")
+knitr::kable(head(ko_apt_all[, 1:9]))
+```
+
+
+## SVG maps
+
+
+```{r, eval=FALSE}
+korea_apt <- list(
+
+    na = ko_apt_all[grepl("세종특별자치시", ko_apt_all$region), ],
+    Gyeonggi = ko_apt_all[grepl("경기도", ko_apt_all$region), ],
+    North_Jeolla = ko_apt_all[grepl("전라북도", ko_apt_all$region), ],
+    South_Gyeongsang = ko_apt_all[grepl("경상남도", ko_apt_all$region), ],
+    South_Jeolla = ko_apt_all[grepl("전라남도", ko_apt_all$region), ],
+    Busan = ko_apt_all[grepl("부산광역시", ko_apt_all$region), ],
+    North_Gyeongsang = ko_apt_all[grepl("경상북도", ko_apt_all$region), ],
+    Sejong = ko_apt_all[grepl("세종특별자치시", ko_apt_all$region), ],
+    Daejeon = ko_apt_all[grepl("대전광역시", ko_apt_all$region), ],
+    Ulsan = ko_apt_all[grepl("울산광역시", ko_apt_all$region), ],
+    Incheon = ko_apt_all[grepl("인천광역시", ko_apt_all$region), ],
+    Gangwon = ko_apt_all[grepl("강원도", ko_apt_all$region), ],
+    South_Chungcheong = ko_apt_all[grepl("충청남도", ko_apt_all$region), ],
+    Jeju = ko_apt_all[grepl("제주특별자치도", ko_apt_all$region), ],
+    North_Chungcheong = ko_apt_all[grepl("충청북도", ko_apt_all$region), ],
+    Seoul = ko_apt_all[grepl("서울특별시", ko_apt_all$region), ],
+    Daegu = ko_apt_all[grepl("대구광역시", ko_apt_all$region), ],
+    Gwangju = ko_apt_all[grepl("광주광역시", ko_apt_all$region), ]
+
+)
+```
+
+* `SVG maps`<https://www.amcharts.com/svg-maps/>는 다양한 맵차트에 폴리곤형식의 base data를 주는 오픈소스입니다.
+* 한국은 18개의 지역으로, (한개는 결측치) 분리되어있습니다.
+
+<br>
+
+```{r}
+mapdata <- get_data_from_map(download_map_data("countries/kr/kr-all"))
+glimpse(mapdata)
+```
+
+```{r, include=FALSE}
+hc_key <- mapdata %>% select(code = `hc-key`) %>% mutate(value = NA)
+
+korea <- data.frame(hc_key, name = c("na", "Gyeonggi", "North_Jeolla", "South_Gyeongsang", "South_Jeolla", "Busan", "North_Gyeongsang", "Sejong", "Daejeon", "Ulsan", "Incheon", "Gangwon", "South_Chungcheong", "Jeju", "North_Chungcheong", "Seoul", "Daegu", "Gwangju"))
+```
+
+```{r, include=FALSE}
+for(i in 1:nrow(korea)){
+    region <- paste(korea[i, 3])
+    korea[i, 2] <- korea_apt[[region]] %>% filter(year == 2016) %>% summarise(mean = round(mean(trading.price, na.rm = T), 0))
+}
+```
+
+```{r}
+knitr::kable(korea)
+```
+
+
+## highmaps chart
+
+
+```{r}
+hcmap_1 <- hcmap("countries/kr/kr-all",
+      data = korea,
+      value = "value",
+      joinBy = c("hc-key", "code"),
+      name = "아파트 평균가",
+      dataLabels = list(enabled = TRUE, format = '{point.name}'),
+      borderColor = "#FAFAFA",
+      borderWidth = 0.1,
+      tooltip = list(valueDecimals = 2, 
+                     valuePrefix = "",
+                     valueSuffix = " 만원")) 
+```
+
+```{r}
+hcmap_1
+```
+
+
+* 위 hcmap chart는 hcmap 의 기본적인 사용한 모습입니다.
+* 18개의 도시를 아파트 평균 가격대별로 시각화를 하였습니다.
+
+
+***
+<br>
+
+* 추가적으로 특정 금액구간별로 색깔을 입히고 원하는 금액대를 클릭해서 원하는 지역만 볼 수 있게 만들었습니다.
+* `노른자 땅(서울)`을 보기 위해서는 50000~60000만원만 남기고 클릭해제하면 됩니다.
+* `zoomType` 함수를 통해서 확대가 가능합니다. (드래그 해보세요)
+
+
+```{r}
+hcmap_2 <- hcmap("countries/kr/kr-all",
+      data = korea,
+      value = "value",
+      joinBy = c("hc-key", "code"),
+      name = "평균가",
+      dataLabels = list(enabled = TRUE, format = '{point.name}'),
+      borderColor = "#FAFAFA",
+      borderWidth = 1,
+      tooltip = list(valueDecimals = 0,
+                     valuePrefix = "",
+                     valueSuffix = " 만원")) %>% 
+    hc_colorAxis(dataClasses = color_classes(
+        c(10000, 15000, 20000, 25000, 30000, 50000, 60000)),
+        minColor = "#FFFFFF",
+        maxColor = "#434348",
+        type = "logarithmic") %>% 
+    hc_legend(layout = "vertical",
+              align = "right",
+              floating = TRUE, 
+              valueDecimals = 0, 
+              valueSuffix = "만원") %>% 
+    hc_chart(zoomType = "xy", panKey = "shift")
+```
+
+```{r}
+hcmap_2
+```
+
+***
+<br>
+
+<a href="#top">Back to top</a>
+
+
+> <h1>Chapter 2.</h1>
+
+
+# 4. OpenAPI
+
+
+* `budongsan`패키지의 단점은 제작자가 2016년 11월 이후에 업데이트를 안한다는 것입니다.
+* 한국의 2017년의 최신 아파트 매매가 데이터를 사용하기 위해서는 직접 데이터를 수집하는 수밖에 없습니다.
+* 공공데이터포털<http://www.data.go.kr/>는 국가가 정부3.0 취지에 맞게 한국의 여러 자료들을 공개하는 사이트입니다.
+* 공공데이터포털에서 국토교통부 실거래가 정보를 `REST`(Representational State Transfer) 제공합니다.
+* R 에서 위`API`의 기본적인 사용방법은 원하는 데이터를 `Query` 형태로 불러들여 `JSON` 형태로 읽어주면 됩니다.
+
+<br>
+
+```{r}
+api_url <- "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?LAWD_CD="
+service_key <- "<your key>"
+#서울시 지역코드
+
+    
+locCode <-c("11110","11140","11170","11200","11215","11230","11260","11290","11305","11320",
+            "11350","11380","11410","11440","11470","11500","11530","11545","11560","11590",
+            "11620","11650","11680","11710","11740")
+
+locCode_nm <-c("종로구","중구","용산구","성동구","광진구","동대문구","중랑구","성북구","강북구","도봉구",
+               "노원구","은평구","서대문구","마포구","양천구","강서구","구로구","금천구","영등포구","동작구",
+               "관악구","서초구","강남구","송파구","강동구")
+
+
+
+datelist <-c("201801", "201802")
+```
+
+```{r}
+urllist <- list()
+cnt <-0
+
+for(i in 1:length(locCode)){
+    for(j in 1:length(datelist)){
+        cnt = cnt + 1
+        urllist[cnt] <- paste0(api_url,locCode[i],
+                               "&DEAL_YMD=",
+                               datelist[j],
+                               "&numOfRows=1000",
+                               "&serviceKey=",
+                               service_key) 
+  }
+}
+```
+ 
+```{r}
+total<-list()
+
+for(i in 1:length(urllist)){
+    
+    item <- list()
+    item_temp_dt<-data.table()
+    
+    raw.data <- xmlTreeParse(urllist[i], useInternalNodes = TRUE,encoding = "utf-8")
+    rootNode <- xmlRoot(raw.data)
+    items <- rootNode[[2]][['items']]
+
+    size <- xmlSize(items)
+    
+    for(j in 1:size){
+        item_temp <- xmlSApply(items[[j]],xmlValue)
+        item_temp_dt <- data.table( price = item_temp[1],
+                                    con_year = item_temp[2],
+                                    year = item_temp[3],
+                                    street = item_temp[4],
+                                    str_code = item_temp[5],
+                                    dong = item_temp[11],
+                                    aptnm = item_temp[17],
+                                    month = item_temp[18],
+                                    dat = item_temp[19],
+                                    area = item_temp[21],
+                                    bungi = item_temp[22],
+                                    floor = item_temp[24],
+                                    gu_code = locCode[((j-1)%/%12)+1],
+                                    gu = locCode_nm[((j-1)%/%12)+1]
+                                    )
+        item[[j]]<-item_temp_dt
+    }
+    total[[i]] <- rbindlist(item)
+}
+```
+
+
+* 최대한 `budongsan` 패키지와 비슷한 형태로 핸들링했습니다.
+<br>
+
+```{r}
+seoul_apt_api_2017 <- rbindlist(total)
+seoul_apt_api_2017 <- na.omit(seoul_apt_api_2017)
+seoul_apt_api_2017$price <- as.numeric(gsub(",", "",seoul_apt_api_2017$price))
+```
+
+```{r}
+hcboxplot(x = seoul_apt_api_2017$price, var = seoul_apt_api_2017$gu,
+          name = "Length", color = "#2980b9") %>% hc_add_theme(hc_theme_sandsignika())
+```
+
+
+* 2017년 서울의 아파트 매매가격을 본 결과 25개의 자치구가 큰 차이가 없을을 볼 수 있습니다. 예를들어 `강남구` 의 아파트 매매가가 다른 곳과 크게 다르지 않습니다.
+
+* 아파트 금액을 이용해 시각화할 아이디어를 찾다가 부동산이나 복덕방에 있는 친근한 사진이 생각났습니다.
+
+
+***
+<br>
+
+![](pick_2.jpg)
+
+
+# 5. leaflet
+
+* `leaflet` 패키지를 이용하기 위해서는 지구의 x, y축 좌표 즉 위경도 좌표가 필요합니다.
+* 위 공공데이터 포털에서 데이터를 가져오는 API 형식을 다시한번 이용해서 `다음지도 API` <http://apis.map.daum.net/>를 이용해서 `주소`를 `좌표`로 변환시켰습니다.
+* 모든 아파트주소를 지도위에 표기하면 과부화가 걸리므로 `동` 별로 아파트 매매가격의 평균을 이용해서 표시했습니다.
+<br>
+
+
+```{r}
+seoul_apt_api_2017_map <- seoul_apt_api_2017 %>% group_by(dong) %>% summarise(n = n(), mean = round(mean(price), 0))
+seoul_apt_api_2017_map <- as.data.table(seoul_apt_api_2017_map)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+for(i in 1:nrow(seoul_apt_api_2017_map)){
+    
+    post <- paste("서울특별시", seoul_apt_api_2017_map[i, ]$dong, sep = " ")
+    # post <- iconv(post, from = "cp949", to = "UTF-8") # win version
+    post_url <- URLencode(post)
+    
+    url <- paste0("https://apis.daum.net/local/geo/addr2coord?apikey=<your key>&q=",
+                  post_url,"&output=json")
+    
+    url_query <- readLines(url)
+    
+    url_json <- fromJSON(paste0(url_query, collapse = ""))
+    
+    x_point <- mean(url_json$channel$item$point_x)
+    y_point <- mean(url_json$channel$item$point_y)
+    
+    seoul_apt_api_2017_map[i, x_ := x_point]
+    seoul_apt_api_2017_map[i, y_ := y_point]
+    seoul_apt_api_2017_map[i, n_ := i]
+    
+}
+```
+
+```{r}
+knitr::kable(head(seoul_apt_api_2017_map))
+```
+
+
+```{r}
+seoul_apt_api_2017_map_purr <- seoul_apt_api_2017_map %>% 
+    mutate(level = cut(mean,
+                       c(0, 50000, 100000, 200000, 500000),
+                       labels = c("~ 5억",
+                                  "5억 ~ 10억",
+                                  "10억 ~ 20억",
+                                  "20억 ~ 50억")))
+
+seoul_apt_api_2017_map_purr_split <- split(seoul_apt_api_2017_map_purr, seoul_apt_api_2017_map_purr$level)
+seoul_leaf <- leaflet(width = "100%") %>% addTiles()
+
+seoul_leaf_ <- names(seoul_apt_api_2017_map_purr_split) %>%
+    walk( function(df) {
+        seoul_leaf <<- seoul_leaf %>%
+            addMarkers(data = seoul_apt_api_2017_map_purr_split[[df]],
+                       lng = ~x_, lat = ~y_,
+                       popup = ~as.character(dong),
+                       label = ~as.character(mean),
+                       labelOptions = labelOptions(noHide = T,
+                                                   textsize = "15px",
+                                                   direction  =  'auto'),
+                       group  =  df,
+                       clusterOptions  = markerClusterOptions(
+                           removeOutsideVisibleBounds  =  F))
+        })
+    
+
+seoul_leaf <- seoul_leaf %>%
+  addLayersControl(
+    overlayGroups = names(seoul_apt_api_2017_map_purr_split),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+    addMiniMap(toggleDisplay = TRUE)
+```
+
+
+* `leaflet` 패키지가 가끔식 R의 Markdown 과 호환상 충돌을 일으킬 때가 있습니다. 
+* 지도상에서 금액대별 군집화를 통해 시각화했습니다.
+* 원하는 금액대를 선택해서 볼 수 있습니다.
+* 위 결과를 `RPubs`에 올려놓았습니다. <https://rpubs.com/J-Park/KATA_leaflet>
+<br>
+
+```{r, eval=FALSE}
+seoul_leaf
+```
+
+```{r, echo=FALSE}
+knitr::include_url("https://rpubs.com/J-Park/KATA_leaflet", height = "600px")
+```
+
+
+# 6. Thank you
+<br>
+
+![](thank you.png)
+
+<a href="#top">Back to top</a>

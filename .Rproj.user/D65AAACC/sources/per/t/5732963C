@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549779605911.000,
+    "dirty" : false,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "2849982292",
+    "id" : "5732963C",
+    "lastKnownWriteTime" : 1549779678,
+    "last_content_update" : 1549779678828,
+    "path" : "~/R/2019_02_02 [ bike ]/map_code.R",
+    "project_path" : "map_code.R",
+    "properties" : {
+        "cursorPosition" : "37,3",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 12,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

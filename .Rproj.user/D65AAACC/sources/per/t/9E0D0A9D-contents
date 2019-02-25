@@ -1,0 +1,74 @@
+remDr <- remoteDriver(remoteServerAddr ="localhost", port=4445, browserName="chrome")
+remDr$open() # 브라우저 열기
+remDr$navigate("https://play.google.com/store/apps/details?id=com.dki.spb_android&showAllReviews=true")
+#탐색 페이지 지정
+Sys.sleep(2)
+
+#데이터 최신순으로 보기 적용
+webElem <- remDr$findElement(using = 'xpath',"//*/div[@jsname='CWE1Id']")
+webElem$clickElement()
+Sys.sleep(3)
+webElem <- remDr$findElement(using = 'xpath',"//*/div[@jsname='V68bde']/div[@data-value='2']")
+webElem$clickElement()
+Sys.sleep(3)
+
+#스크롤 아래로 내리기 & 더보기 누르기
+k<-1
+reviews <- data.frame()
+start <- 83
+while(T)
+{
+  
+  webscroll <- remDr$findElement("css", "body")
+  remDr$executeScript("window.scrollTo(0,document.body.scrollHeight)")
+  Sys.sleep(7)
+  remDr$executeScript("window.scrollTo(0,document.body.scrollHeight-1300)")
+  Sys.sleep(3)
+
+ 
+  for(i in seq(from =start, to=start+200 , by=2))
+  {
+    jsdata = paste("yf3HXc;_;$",i," YjFXEf;_;$",i+1, sep = "")
+    webElem <- remDr$findElement(using = 'xpath',paste("//*/div[@jsdata='",jsdata,"']//span[@jsname='bN97Pc']", sep = ""))
+    comment<-unlist(webElem$getElementText())
+    
+    webElem <- remDr$findElement(using = 'xpath',paste("//*/div[@jsdata='",jsdata,"']//div[@class='pf5lIe']/div",sep=""))
+    star <- webElem$getElementAttribute("aria-label"); star;
+    star <- substr(star, 11, 11)
+    
+    webElem <- remDr$findElement(using = 'xpath',paste("//*/div[@jsdata='",jsdata,"']//span[@class='p2TkOb']",sep=""))
+    
+    date<-unlist(webElem$getElementText())
+    
+    review <- cbind(comment,star,date)
+    reviews <- rbind(reviews, review)
+    
+  }
+    start <- start+202;  
+
+  webElem <- remDr$findElement(using = 'xpath',"//*/div[@jsname='i3y3Ic']")
+  if(webElem$elementId == 0)
+    break; 
+  webElem$clickElement()
+  Sys.sleep(7)
+}
+
+  for(i in seq(from =start, to=2965 , by=2))
+  {
+    jsdata = paste("yf3HXc;_;$",i," YjFXEf;_;$",i+1, sep = "")
+    webElem <- remDr$findElement(using = 'xpath',paste("//*/div[@jsdata='",jsdata,"']//span[@jsname='bN97Pc']", sep = ""))
+    comment<-unlist(webElem$getElementText())
+    
+    webElem <- remDr$findElement(using = 'xpath',paste("//*/div[@jsdata='",jsdata,"']//div[@class='pf5lIe']/div",sep=""))
+    star <- webElem$getElementAttribute("aria-label"); star;
+    star <- substr(star, 11, 11)
+    
+    webElem <- remDr$findElement(using = 'xpath',paste("//*/div[@jsdata='",jsdata,"']//span[@class='p2TkOb']",sep=""))
+    
+    date<-unlist(webElem$getElementText())
+    
+    review <- cbind(comment,star,date)
+    reviews <- rbind(reviews, review)
+    
+  }
+write.csv(reviews, "googleplay_comment_list1.csv")

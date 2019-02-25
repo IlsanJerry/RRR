@@ -1,0 +1,172 @@
+rm(list = ls())
+#ggmap 
+#내 api key AIzaSyAbw8nfyYvBG5lHF3Isf5xMEivl6h9w0eU
+install.packages("ggmap")
+library(ggmap)
+
+install.packages('devtools') 
+library(devtools) 
+
+install_github("dkahle/ggmap")
+library(ggmap)
+
+
+#자전거 대여소 위치정보 불러오기
+bike_station <-read.csv("C:/Users/ChanWoo/Desktop/따릉이 분석/2018 공공 자전거/대여소 위치 정보/대여소정보.csv")
+
+#
+seoul_apt_api_2017 <- rbindlist(total)
+seoul_apt_api_2017 <- na.omit(seoul_apt_api_2017)
+seoul_apt_api_2017$price <- as.numeric(gsub(",", "",seoul_apt_api_2017$price))
+
+
+mapdata <- get_data_from_map(download_map_data("countries/kr/kr-all"))
+glimpse(mapdata)
+
+
+########################################################
+rm(list = ls())
+#http://요청주소/인증키/요청파일타입/OpenAPI호출서비스명/요청시작위치/요청종료위치/{검색어}법
+
+#http://openapi.seoul.go.kr:8088/7a53766a64737570323951724c4878/xml/PublicBicycleRenTIdinfo/1/5/
+
+install.packages("XML")
+library(XML)
+#1~1460개  ,한번에 요청할 수 있는게 1000개여서 두번 끊어서 갖고와야함; 
+url1<-"http://openapi.seoul.go.kr:8088/"
+url2<-"/xml/"
+url3<-"/1/"
+url4<-"1000/"
+
+KEY="7a53766a64737570323951724c4878"
+SERVICE="PublicBicycleRenTIdinfo"
+
+table <-data.frame()
+
+requestUrl<-paste(url1,KEY,url2,SERVICE,url3,url4,sep = "")
+doc <-xmlToDataFrame(requestUrl)
+
+##데이터 전체 갯수 파악
+totaldatanumber = as.numeric(doc[1,1])
+datanumber <- totaldatanumber
+
+requestUrl<-paste(url1,KEY,url2,SERVICE,url3,url4,sep = "")
+doc <-xmlToDataFrame(requestUrl)
+table0<-doc[3:nrow(doc),4:ncol(doc)]
+
+#table합침 ,1460개, 변수8개 
+station<-rbind(table0,table1)
+str(station)
+
+#####################################################
+locCode_nm <-c("종로구","중구","용산구","성동구","광진구","동대문구","중랑구","성북구","강북구","도봉구",
+               "노원구","은평구","서대문구","마포구","양천구","강서구","구로구","금천구","영등포구","동작구",
+               "관악구","서초구","강남구","송파구","강동구")
+
+install("highcharter")
+library(highcharter)
+
+mapdata <- get_data_from_map(download_map_data("countries/kr/kr-all"))
+glimpse(mapdata)
+
+
+bike_2018 <- na.omit(station)
+bike_2018$CRADLE_COUNT <- as.numeric(gsub(",", "",station$CRADLE_COUNT))
+
+#서울시 구별 - 거치대수 분포 
+hcboxplot(x = bike_2018$CRADLE_COUNT , var = bike_2018$ADDR_GU,
+          name = "Length", color = "#2980b9") %>% hc_add_theme(hc_theme_sandsignika())
+
+####################################################
+str(bike_2018)
+install.packages("purrr")
+library(purrr)
+install.packages("dplyr")
+library(dplyr)
+
+install.packages("data.table")
+library(data.table)
+
+bike_2018_MAP <- bike_2018 %>% group_by(ADDR_GU) %>% summarise(n = n(), mean = round(mean(CRADLE_COUNT), 0))
+bike_2018[,7]
+aa<-select(bike_2018,LATITUDE,LONGITUDE)
+bike_2018_MAP<-as.data.table(bike_2018_MAP)
+
+
+#########
+bike_2018_MAP_purr <- bike_2018_MAP %>% 
+  mutate(level = cut(mean,
+                     c(0, 40, 50, 60, 70 ,80 ,90),
+                     labels = c("~ 40개",
+                                "40개 ~ 50개",
+                                "50개 ~ 60개",
+                                "60개 ~ 70개",
+                                "70개 ~ 80개",
+                                "80개 ~ 90개",
+                                "90개 ~ 100개")))
+
+
+
+bike_2018_MAP_purr <- bike_2018_MAP %>% 
+  mutate(level = cut(mean,
+                     c(0, 40, 50, 60, 70),
+                     labels = c("~ 5억",
+                                "5억 ~ 10억",
+                                "10억 ~ 20억",
+                                "20억 ~ 50억")))
+bike_2018_MAP_purr_split <- split(bike_2018_MAP_purr,
+                                  bike_2018_MAP_purr$level)
+
+
+
+#######################
+install.packages("leaflet")
+library(leaflet)
+
+install.packages("maps")
+library(maps)
+seoul_leaf <- leaflet(width = "100%") %>% addTiles()
+
+install.packages("reprex")
+library(reprex)
+######################33
+
+abc<-select(bike_2018,ADDR_GU,CRADLE_COUNT,CONTENT_NM,LATITUDE,LONGITUDE)
+
+seoul_leaf_ <- names(abc) %>%
+  walk( function(df) {
+    seoul_leaf <<- seoul_leaf %>%
+      addMarkers(data = abc[[df]],
+                 lng = ~LATITUDE, lat = ~LONGITUDE,
+                 popup = ~as.character(ADDR_GU),
+                 label = ~as.character(CRADLE_COUNT),
+                 labelOptions = labelOptions(noHide = T,
+                                             textsize = "15px",
+                                             direction  =  'auto'),
+                 group  =  df,
+                 clusterOptions  = markerClusterOptions(
+                   removeOutsideVisibleBounds  =  F))
+  })
+
+
+
+##new test
+###################################################################################
+library(ggplot2)
+
+library(ggmap)
+
+aaa<-as.integer(aa)
+str(Abc)
+aaaa<- apply(aa,1,mean)
+cent <- c(mean(aa$LONGITUDE, aa$LATITUDE))
+
+bmap <- ggmap(get_navermap(center = cent, level = 6, baselayer = "default",
+                           
+                           + overlayers = c("anno_satellite"), marker = data.frame(cent[1], cent[2])
+                           
+                           + key = "18ca44a6a8f5c386fd23a55ddb16e64a", uri = "www.r-project.org"), extent = "device",
+              
+              + base_layer = ggplot(wifizone, aes(x = LON, y = LAT, colour = FLY_GBN)))
+
+bmap + geom_point() =  geom_density2D() + facet_wrap(~FLY_GBN)

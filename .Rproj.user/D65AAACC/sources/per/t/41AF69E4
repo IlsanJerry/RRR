@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549454553832.000,
+    "dirty" : false,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "108467278",
+    "id" : "41AF69E4",
+    "lastKnownWriteTime" : 1549615488,
+    "last_content_update" : 1549812017459,
+    "path" : "~/R/2019_02_02 [ bike ]/xlsx_test.Rmd",
+    "project_path" : "xlsx_test.Rmd",
+    "properties" : {
+        "cursorPosition" : "26,0",
+        "last_setup_crc32" : "",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

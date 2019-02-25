@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549850423133.000,
+    "dirty" : false,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "173966032",
+    "id" : "8B4AD735",
+    "lastKnownWriteTime" : 1550047882,
+    "last_content_update" : 1550047882119,
+    "path" : "~/Rstudy/Rproejct/2019_02_02 [ bike ]/RserveTEST.R",
+    "project_path" : "RserveTEST.R",
+    "properties" : {
+        "cursorPosition" : "10,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

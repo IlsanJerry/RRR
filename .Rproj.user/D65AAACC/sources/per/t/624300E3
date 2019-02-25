@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549701287258.000,
+    "dirty" : false,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "3599672973",
+    "id" : "624300E3",
+    "lastKnownWriteTime" : 1549701770,
+    "last_content_update" : 1549701770,
+    "path" : "~/R/2019_02_02 [ bike ]/wordCloud.R",
+    "project_path" : "wordCloud.R",
+    "properties" : {
+        "cursorPosition" : "76,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

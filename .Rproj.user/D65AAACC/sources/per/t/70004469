@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549690793306.000,
+    "dirty" : false,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "228765859",
+    "id" : "70004469",
+    "lastKnownWriteTime" : 1549700923,
+    "last_content_update" : 1549700923441,
+    "path" : "~/R/2019_02_02 [ bike ]/RJDBC_oracle_test.R",
+    "project_path" : "RJDBC_oracle_test.R",
+    "properties" : {
+        "cursorPosition" : "4,14",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

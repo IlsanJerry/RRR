@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549639632651.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1296310135",
+    "id" : "9E0D0A9D",
+    "lastKnownWriteTime" : 1549639632,
+    "last_content_update" : 1549639632,
+    "path" : "C:/Users/ChanWoo/Downloads/project.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "6,16",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

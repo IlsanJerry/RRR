@@ -1,0 +1,46 @@
+---
+title: "Bike"
+author: "CW_Park"
+date: "2019년 2월 4일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+Sys.setlocale('LC_ALL','C') 
+```
+```{r}
+#install.packages("xlsx")
+install.packages("openxlsx")
+#library(xlsx)
+#library(rJava)
+#library(xlsxjars)
+library(openxlsx) 
+library(devtools)
+install_github("plgrmr/readAny", force = TRUE)
+library(readAny)
+
+install.packages('readxl')
+
+library(readxl)
+
+
+
+```
+
+#bike
+```{r}
+bike_time_use<-read.xlsx("C:/Users/ChanWoo/Desktop/use_time1to2.xlsx",sheet = 1, startRow = 1, colNames = TRUE,encoding = "") 
+
+test <- read.xlsx("C:/Users/ChanWoo/Desktop/use_time1to2.xlsx", sheetIndex = 1, encoding = "utf-8")
+
+
+
+test2 <- read_excel("C:/Users/ChanWoo/Desktop/use_time1to2.xlsx", sheet="sheet1",range="A2:L301840")
+
+test3<- read_excel("C:/Users/ChanWoo/Desktop/use_time1to2.xlsx", sheet="Sheet1", range = cell_limits(c(24, 1), c(NA, 18)),
+                       col_names = FALSE)
+
+
+```
+

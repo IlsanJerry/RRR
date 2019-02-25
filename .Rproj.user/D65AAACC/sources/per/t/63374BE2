@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549441865853.000,
+    "dirty" : true,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "2293231469",
+    "id" : "63374BE2",
+    "lastKnownWriteTime" : 1549446545,
+    "last_content_update" : 1549446700549,
+    "path" : "~/R/2019_02_02 [ bike ]/test.Rmd",
+    "project_path" : "test.Rmd",
+    "properties" : {
+        "cursorPosition" : "45,35",
+        "last_setup_crc32" : "",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

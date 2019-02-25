@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1549779241820.000,
+    "dirty" : false,
+    "encoding" : "CP949",
+    "folds" : "",
+    "hash" : "2264585512",
+    "id" : "B00489CD",
+    "lastKnownWriteTime" : 1549640679,
+    "last_content_update" : 1549640679,
+    "path" : "~/R/2019_02_02 [ bike ]/R_map_daum.R",
+    "project_path" : "R_map_daum.R",
+    "properties" : {
+        "cursorPosition" : "57,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 11,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
