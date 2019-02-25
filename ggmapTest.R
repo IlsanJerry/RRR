@@ -1,3 +1,4 @@
+# Git 테스트를 위해 수정했음.
 rm(list = ls())
 #ggmap 
 #내 api key AIzaSyAbw8nfyYvBG5lHF3Isf5xMEivl6h9w0eU
